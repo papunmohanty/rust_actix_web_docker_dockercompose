@@ -1,0 +1,29 @@
+version: '3.7'
+services:
+  postgres:
+    image: postgres
+    container_name: axtxdb
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data-volume:/var/lib/postgresql/data
+
+  backend:
+    container_name: backend
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres-data-volume:
+    driver: local
